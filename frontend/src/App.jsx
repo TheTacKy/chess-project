@@ -1,5 +1,6 @@
 import { useEffect } from "react";
-import socket from "./sockets/socket";
+import socket from "./socket";
+import ChessBoard from "./ChessBoard";
 
 function App() {
   useEffect(() => {
@@ -12,7 +13,12 @@ function App() {
     };
   }, []);
 
-  return <h1>Chess Site</h1>;
+  return (
+    <div className="App">
+      <h1 style={{ textAlign: 'center', margin: '20px 0' }}>Chess Game</h1>
+      <ChessBoard />
+    </div>
+  );
 }
 
 export default App;
