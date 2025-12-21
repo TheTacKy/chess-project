@@ -1,10 +1,12 @@
 import { useEffect, useRef } from 'react';
-// import socket from './socket.js';
+import socket from './socket.js';
 
-const ChessBoard = () => {
+const ChessBoard = ({ roomCode, playerColor, gameStarted }) => {
   const boardRef = useRef(null);
   const gameRef = useRef(null);
   const boardInstanceRef = useRef(null);
+  const gameHasStartedRef = useRef(false);
+  const gameOverRef = useRef(false);
 
   useEffect(() => {
     // Wait for the chess libraries to be loaded with a timeout
@@ -23,16 +25,16 @@ const ChessBoard = () => {
         // Initialize the chess game
         gameRef.current = new window.Chess();
         
-        // Game state
-        let gameHasStarted = true; // Set to true for single player testing
-        let gameOver = false;
-        let playerColor = 'white'; // Default to white, can be changed based on game logic
+        // Only initialize if we have room info
+        if (!roomCode || !playerColor) {
+          return;
+        }
 
-        const onDragStart = (source, piece, position, orientation) => {
+        const onDragStart = (source, piece) => {
           // Do not pick up pieces if the game is over
           if (gameRef.current.game_over()) return false;
-          if (!gameHasStarted) return false;
-          if (gameOver) return false;
+          if (!gameHasStartedRef.current) return false;
+          if (gameOverRef.current) return false;
 
           // Don't allow picking up opponent's pieces
           if ((playerColor === 'black' && piece.search(/^w/) !== -1) || 
@@ -48,6 +50,13 @@ const ChessBoard = () => {
         };
 
         const onDrop = (source, target) => {
+          // Verify it's the player's turn
+          const currentTurn = gameRef.current.turn();
+          if ((playerColor === 'white' && currentTurn !== 'w') || 
+              (playerColor === 'black' && currentTurn !== 'b')) {
+            return 'snapback';
+          }
+
           const move = {
             from: source,
             to: target,
@@ -61,7 +70,9 @@ const ChessBoard = () => {
           if (gameMove === null) return 'snapback';
 
           // Emit move to server
-          // socket.emit('move', move);
+          if (roomCode) {
+            socket.emit('move', { roomCode, move: gameMove });
+          }
           updateStatus();
         };
 
@@ -85,10 +96,10 @@ const ChessBoard = () => {
           else if (gameRef.current.in_draw()) {
             status = 'Game over, drawn position';
           }
-          else if (gameOver) {
+          else if (gameOverRef.current) {
             status = 'Opponent disconnected, you win!';
           }
-          else if (!gameHasStarted) {
+          else if (!gameHasStartedRef.current) {
             status = 'Waiting for opponent to join';
           }
           // Game still on
@@ -132,29 +143,23 @@ const ChessBoard = () => {
         updateStatus();
 
         // Socket event listeners
-        // socket.on('newMove', (move) => {
-        //   gameRef.current.move(move);
-        //   boardInstanceRef.current.position(gameRef.current.fen());
-        //   updateStatus();
-        // });
+        socket.on('newMove', ({ move }) => {
+          if (gameRef.current && boardInstanceRef.current) {
+            gameRef.current.move(move);
+            boardInstanceRef.current.position(gameRef.current.fen());
+            updateStatus();
+          }
+        });
 
-        // socket.on('startGame', () => {
-        //   gameHasStarted = true;
-        //   updateStatus();
-        // });
+        socket.on('gameStart', () => {
+          gameHasStartedRef.current = true;
+          updateStatus();
+        });
 
-        // socket.on('gameOverDisconnect', () => {
-        //   gameOver = true;
-        //   updateStatus();
-        // });
-
-        // Check for game code in URL
-        // const urlParams = new URLSearchParams(window.location.search);
-        // if (urlParams.get('code')) {
-        //   socket.emit('joinGame', {
-        //     code: urlParams.get('code')
-        //   });
-        // }
+        socket.on('opponentDisconnected', () => {
+          gameOverRef.current = true;
+          updateStatus();
+        });
 
       } catch (error) {
         console.error('Error initializing chess board:', error);
@@ -166,43 +171,49 @@ const ChessBoard = () => {
 
     // Cleanup function for the entire useEffect
     return () => {
-      // socket.off('newMove');
-      // socket.off('startGame');
-      // socket.off('gameOverDisconnect');
+      socket.off('newMove');
+      socket.off('gameStart');
+      socket.off('opponentDisconnected');
       if (boardInstanceRef.current) {
         boardInstanceRef.current.destroy();
       }
     };
-  }, []);
+  }, [roomCode, playerColor, gameStarted]);
+
+  // Update game started state when prop changes
+  useEffect(() => {
+    if (gameStarted) {
+      gameHasStartedRef.current = true;
+    }
+  }, [gameStarted]);
+
+  // Don't render board if no room/color assigned
+  if (!roomCode || !playerColor) {
+    return null;
+  }
 
   return (
-    <div className="chess-container" style={{ 
-      display: 'flex', 
-      flexDirection: 'column', 
-      alignItems: 'center', 
-      gap: '20px',
-      padding: '20px'
-    }}>
-      <div id="myBoard" ref={boardRef} style={{ 
-        width: '500px', 
-        height: '500px',
-        border: '2px solid #333',
-        borderRadius: '8px',
-        boxShadow: '0 4px 8px rgba(0,0,0,0.3)'
-      }}></div>
-      <div id="status" style={{ 
-        textAlign: 'center', 
-        fontSize: '20px', 
-        fontWeight: 'bold',
-        color: '#333'
-      }}></div>
-      <div id="pgn" style={{ 
-        textAlign: 'center', 
-        fontSize: '14px',
-        color: '#666',
-        maxWidth: '500px',
-        wordWrap: 'break-word'
-      }}></div>
+    <div className="chess-container flex flex-col items-center gap-4 p-4 w-full">
+      <div 
+        id="myBoard" 
+        ref={boardRef} 
+        className="rounded-xl shadow-2xl transition-all duration-300"
+        style={{ 
+          width: 'min(90vw, 95vh - 150px, 1000px)', 
+          height: 'min(90vw, 95vh - 150px, 1000px)',
+          maxWidth: '1000px',
+          maxHeight: '1000px',
+          border: 'none'
+        }}
+      ></div>
+      <div 
+        id="status" 
+        className="text-center text-lg md:text-xl font-bold text-black dark:text-white px-4 py-2 rounded-xl bg-white dark:bg-gray-800 shadow-lg border-2 border-gray-200 dark:border-gray-700 min-h-[50px] flex items-center justify-center w-full max-w-2xl empty:hidden"
+      ></div>
+      <div 
+        id="pgn" 
+        className="text-center text-xs md:text-sm text-gray-700 dark:text-gray-300 max-w-2xl break-words bg-gray-50 dark:bg-gray-800/50 px-4 py-2 rounded-lg border-2 border-gray-200 dark:border-gray-700 w-full empty:hidden"
+      ></div>
     </div>
   );
 };
