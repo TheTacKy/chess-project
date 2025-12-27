@@ -5,6 +5,7 @@ import RoomManager from "../components/RoomManager";
 
 function Home() {
   const [roomInfo, setRoomInfo] = useState({ roomCode: null, playerColor: null, timeControl: 3 });
+  const [selectedTimeControl, setSelectedTimeControl] = useState(3);
   const [gameStarted, setGameStarted] = useState(false);
 
   useEffect(() => {
@@ -19,14 +20,19 @@ function Home() {
 
   const handleRoomJoined = ({ roomCode, color, timeControl }) => {
     setRoomInfo({ roomCode, playerColor: color, timeControl: timeControl || 3 });
+    setSelectedTimeControl(timeControl || 3);
   };
 
   const handleGameStart = () => {
     setGameStarted(true);
   };
 
+  const handleTimeControlChange = (timeControl) => {
+    setSelectedTimeControl(timeControl);
+  };
+
   return (
-    <div>
+    <div className="bg-gray-200 dark:bg-zinc-800">
       {roomInfo.roomCode ? (
           <div className="flex flex-col lg:flex-row gap-6 items-start lg:items-center">
             {/* Chess Board - Takes up most of the screen */}
@@ -60,7 +66,7 @@ function Home() {
                 roomCode={roomInfo.roomCode}
                 playerColor={roomInfo.playerColor}
                 gameStarted={gameStarted}
-                timeControl={roomInfo.timeControl}
+                timeControl={selectedTimeControl}
               />
             </div>
             
@@ -69,11 +75,12 @@ function Home() {
               <RoomManager 
                 onRoomJoined={handleRoomJoined} 
                 onGameStart={handleGameStart}
+                onTimeControlChange={handleTimeControlChange}
                 showRoomInfo={false}
                 gameStarted={gameStarted}
                 roomCode={roomInfo.roomCode}
                 playerColor={roomInfo.playerColor}
-                timeControl={roomInfo.timeControl}
+                timeControl={selectedTimeControl}
               />
             </div>
           </div>

@@ -1,15 +1,4 @@
-import axios from 'axios';
-
-const API_BASE_URL = 'http://localhost:5001/api';
-
-// Create axios instance with default config
-const api = axios.create({
-  baseURL: API_BASE_URL,
-  headers: {
-    'Content-Type': 'application/json',
-  },
-  withCredentials: true, // Important for cookies
-});
+import api from './lib/axios';
 
 // Room API functions
 export const roomAPI = {
@@ -44,39 +33,8 @@ export const roomAPI = {
   },
 };
 
-// Auth API functions
-export const authAPI = {
-  // Sign up a new user
-  signup: async (username, email, password) => {
-    const response = await api.post('/auth/signup', {
-      username,
-      email,
-      password,
-    });
-    return response.data;
-  },
-
-  // Log in a user
-  login: async (email, password) => {
-    const response = await api.post('/auth/login', {
-      email,
-      password,
-    });
-    return response.data;
-  },
-
-  // Log out a user
-  logout: async () => {
-    const response = await api.post('/auth/logout');
-    return response.data;
-  },
-
-  // Get current user
-  getCurrentUser: async () => {
-    const response = await api.get('/auth/me');
-    return response.data;
-  },
-};
+// Auth API functions - re-exported from store for backward compatibility
+export { authAPI } from './store/useAuthStore';
 
 export default api;
 

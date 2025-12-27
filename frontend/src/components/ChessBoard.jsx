@@ -1,7 +1,6 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import socket from '../socket.js';
-import Timer from './Timer.jsx';
-import { authAPI } from '../api';
+import GameHeader from './GameHeader.jsx';
 
 const ChessBoard = ({ roomCode, playerColor, gameStarted, timeControl = 3, opponentUsername = null }) => {
   const boardRef = useRef(null);
@@ -9,22 +8,6 @@ const ChessBoard = ({ roomCode, playerColor, gameStarted, timeControl = 3, oppon
   const boardInstanceRef = useRef(null);
   const gameHasStartedRef = useRef(false);
   const gameOverRef = useRef(false);
-  const [currentUser, setCurrentUser] = useState(null);
-
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const response = await authAPI.getCurrentUser();
-        setCurrentUser(response.user);
-      } catch (err) {
-        if (err.response?.status !== 401) {
-          console.error('Error fetching user:', err);
-        }
-        setCurrentUser(null);
-      }
-    };
-    fetchUser();
-  }, []);
 
   useEffect(() => {
     // Wait for the chess libraries to be loaded with a timeout
@@ -195,55 +178,16 @@ const ChessBoard = ({ roomCode, playerColor, gameStarted, timeControl = 3, oppon
   const boardWidth = 'min(90vw, 95vh - 150px, 1000px)';
   const maxBoardWidth = '1000px';
 
-  // Determine player info
-  const userUsername = currentUser?.username || 'Guest';
-  const userElo = currentUser?.elo || 1000;
-  const userInitial = userUsername.charAt(0).toUpperCase();
-
-  // When game is active
-  const whitePlayerName = gameStarted && playerColor ? (playerColor === 'white' ? userUsername : (opponentUsername || 'Opponent')) : 'Opponent';
-  const blackPlayerName = gameStarted && playerColor ? (playerColor === 'black' ? userUsername : (opponentUsername || 'Opponent')) : userUsername;
-  const whitePlayerInitial = gameStarted && playerColor ? (playerColor === 'white' ? userInitial : '?') : '?';
-  const blackPlayerInitial = gameStarted && playerColor ? (playerColor === 'black' ? userInitial : '?') : userInitial;
-  const whitePlayerElo = gameStarted && playerColor ? (playerColor === 'white' ? userElo : 1000) : null;
-  const blackPlayerElo = gameStarted && playerColor ? (playerColor === 'black' ? userElo : 1000) : userElo;
-
   return (
     <div className="chess-container flex flex-col items-center gap-2 p-4 w-full">
-      {/* Top Header - White Player / Opponent */}
-      <div 
-        className="w-full flex items-center justify-between bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 rounded-lg px-4 py-2 shadow-sm"
-        style={{ 
-          width: boardWidth,
-          maxWidth: maxBoardWidth 
-        }}
-      >
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-gray-300 dark:bg-gray-600 rounded flex items-center justify-center flex-shrink-0">
-            <span className="text-base font-bold text-gray-600 dark:text-gray-300">
-              {whitePlayerInitial}
-            </span>
-          </div>
-          <div className="flex flex-col">
-            <span className="font-bold text-black dark:text-white text-sm">
-              {whitePlayerName}
-            </span>
-            {whitePlayerElo !== null && (
-              <span className="text-xs text-gray-600 dark:text-gray-400">
-                ELO: {whitePlayerElo}
-              </span>
-            )}
-          </div>
-        </div>
-        <div className="flex-shrink-0">
-          <Timer 
-            timeControl={timeControl}
-            gameStarted={gameStarted}
-            playerColor="white"
-            showOnly={true}
-          />
-        </div>
-      </div>
+      {/* Opponent Header - Above board */}
+      <GameHeader 
+        gameStarted={gameStarted}
+        playerColor={playerColor}
+        timeControl={timeControl}
+        opponentUsername={opponentUsername}
+        position="top"
+      />
       
       <div className="flex flex-row items-start gap-4 justify-center w-full">
         <div 
@@ -260,38 +204,14 @@ const ChessBoard = ({ roomCode, playerColor, gameStarted, timeControl = 3, oppon
         ></div>
       </div>
 
-      {/* Bottom Header - Black Player / User */}
-      <div 
-        className="w-full flex items-center justify-between bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 rounded-lg px-4 py-2 shadow-sm"
-        style={{ 
-          width: boardWidth,
-          maxWidth: maxBoardWidth 
-        }}
-      >
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-gray-300 dark:bg-gray-600 rounded flex items-center justify-center flex-shrink-0">
-            <span className="text-base font-bold text-gray-600 dark:text-gray-300">
-              {blackPlayerInitial}
-            </span>
-          </div>
-          <div className="flex flex-col">
-            <span className="font-bold text-black dark:text-white text-sm">
-              {blackPlayerName}
-            </span>
-            <span className="text-xs text-gray-600 dark:text-gray-400">
-              ELO: {blackPlayerElo}
-            </span>
-          </div>
-        </div>
-        <div className="flex-shrink-0">
-          <Timer 
-            timeControl={timeControl}
-            gameStarted={gameStarted}
-            playerColor="black"
-            showOnly={true}
-          />
-        </div>
-      </div>
+      {/* Current User Header - Below board */}
+      <GameHeader 
+        gameStarted={gameStarted}
+        playerColor={playerColor}
+        timeControl={timeControl}
+        opponentUsername={opponentUsername}
+        position="bottom"
+      />
     </div>
   );
 };

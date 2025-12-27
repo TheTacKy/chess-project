@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import socket from '../socket';
 import { roomAPI } from '../api';
 
-const RoomManager = ({ onRoomJoined, onGameStart, showRoomInfo = false, gameStarted = false, roomCode: propRoomCode = null, playerColor: propPlayerColor = null, timeControl: propTimeControl = 3 }) => {
+const RoomManager = ({ onRoomJoined, onGameStart, onTimeControlChange, showRoomInfo = false, gameStarted = false, roomCode: propRoomCode = null, playerColor: propPlayerColor = null, timeControl: propTimeControl = 3 }) => {
   const [roomCode, setRoomCode] = useState('');
   const [currentRoom, setCurrentRoom] = useState(propRoomCode || null);
   const [playerColor, setPlayerColor] = useState(propPlayerColor || null);
@@ -129,13 +129,13 @@ const RoomManager = ({ onRoomJoined, onGameStart, showRoomInfo = false, gameStar
         };
 
         return (
-          <div className="w-full lg:w-[500px] bg-white dark:bg-black rounded-2xl shadow-2xl border-2 border-gray-300 dark:border-white p-6 transition-all duration-300 sticky top-4 max-h-[600px] flex flex-col">
+          <div className="w-full lg:w-[500px] bg-white dark:bg-neutral-900 rounded-2xl shadow-2xl border-2 border-gray-300 dark:border-gray-700 p-6 sticky top-4 max-h-[600px] flex flex-col">
             <h2 className="text-xl font-bold text-black dark:text-white mb-4 text-center">
               Moves
             </h2>
             <div className="flex-1 overflow-y-auto">
               {moves.length === 0 ? (
-                <p className="text-center text-gray-500 dark:text-gray-400 text-sm">No moves yet</p>
+                <p className="text-center text-gray-600 dark:text-gray-400 text-sm">No moves yet</p>
               ) : (
                 <div className="flex flex-col gap-1">
                   {moves.map((move, index) => {
@@ -146,8 +146,8 @@ const RoomManager = ({ onRoomJoined, onGameStart, showRoomInfo = false, gameStar
                         key={index}
                         className={`px-3 py-2 rounded text-sm font-mono ${
                           isWhite
-                            ? 'bg-gray-100 dark:bg-gray-800 text-black dark:text-white'
-                            : 'bg-white dark:bg-black text-black dark:text-white'
+                            ? 'bg-gray-200 dark:bg-gray-800 text-black dark:text-white'
+                            : 'bg-white dark:bg-neutral-900 text-black dark:text-white'
                         }`}
                       >
                         {formatted}
@@ -163,9 +163,9 @@ const RoomManager = ({ onRoomJoined, onGameStart, showRoomInfo = false, gameStar
 
       // Show room info when game hasn't started
       return (
-        <div className="w-full lg:w-[500px] bg-white dark:bg-black rounded-2xl shadow-2xl border-2 border-gray-300 dark:border-white p-6 transition-all duration-300 sticky top-4">
+        <div className="w-full lg:w-[500px] bg-white dark:bg-neutral-900 rounded-2xl shadow-2xl border-2 border-gray-300 dark:border-gray-700 p-6 sticky top-4">
           <div className="text-center">
-            <div className="inline-block px-3 py-1 mb-3 bg-gray-200 dark:bg-white text-black dark:text-black rounded-full text-xs font-semibold">
+            <div className="inline-block px-3 py-1 mb-3 bg-gray-200 dark:bg-gray-700 text-black dark:text-white rounded-full text-xs font-semibold">
               Room Active
             </div>
             <h2 className="text-xl font-bold text-black dark:text-white mb-3">
@@ -179,17 +179,17 @@ const RoomManager = ({ onRoomJoined, onGameStart, showRoomInfo = false, gameStar
             </p>
             <span className={`inline-block px-4 py-2 rounded-full font-bold mb-4 ${
               playerColor === 'white' 
-                ? 'bg-white dark:bg-white text-black dark:text-black border-2 border-gray-300 dark:border-white' 
-                : 'bg-black dark:bg-black text-white dark:text-white border-2 border-gray-300 dark:border-white'
+                ? 'bg-white text-black border-2 border-gray-300' 
+                : 'bg-black text-white border-2 border-gray-300'
             }`}>
               {playerColor}
             </span>
             {playerColor === 'white' && (
               <div className="mt-4">
                 <div className="flex justify-center space-x-1 mb-2">
-                  <div className="w-2 h-2 bg-black dark:bg-white rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
-                  <div className="w-2 h-2 bg-black dark:bg-white rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
-                  <div className="w-2 h-2 bg-black dark:bg-white rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
+                  <div className="w-2 h-2 bg-white rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
+                  <div className="w-2 h-2 bg-white rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
+                  <div className="w-2 h-2 bg-white rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
                 </div>
               </div>
             )}
@@ -200,23 +200,23 @@ const RoomManager = ({ onRoomJoined, onGameStart, showRoomInfo = false, gameStar
     
     // Full version when not in sidebar
     return (
-      <div className="max-w-md mx-auto bg-white dark:bg-black rounded-2xl shadow-2xl border-2 border-gray-300 dark:border-white p-6 transition-all duration-300">
+      <div className="max-w-md mx-auto bg-white dark:bg-neutral-900 rounded-2xl shadow-2xl border-2 border-gray-700 p-6">
         <div className="text-center">
-          <div className="inline-block px-4 py-1 mb-4 bg-gray-200 dark:bg-white text-black dark:text-black rounded-full text-sm font-semibold">
+          <div className="inline-block px-4 py-1 mb-4 bg-gray-700 text-white rounded-full text-sm font-semibold">
             Room Active
           </div>
-          <h2 className="text-2xl font-bold text-black dark:text-white mb-4">
-            Room: <span className="text-black dark:text-white font-mono">{currentRoom}</span>
+          <h2 className="text-2xl font-bold text-white mb-4">
+            Room: <span className="text-white font-mono">{currentRoom}</span>
           </h2>
-          <p className="text-sm text-black dark:text-white mb-4">
+          <p className="text-sm text-white mb-4">
             Time Control: {timeControl === 1 ? 'Bullet (1 min)' : timeControl === 3 ? 'Blitz (3 min)' : 'Rapid (10 min)'}
           </p>
-          <p className="text-black dark:text-white mb-4">
+          <p className="text-white mb-4">
             You are playing as: 
             <span className={`ml-2 px-4 py-2 rounded-full font-bold ${
               playerColor === 'white' 
-                ? 'bg-white dark:bg-white text-black dark:text-black border-2 border-gray-300 dark:border-white' 
-                : 'bg-black dark:bg-black text-white dark:text-white border-2 border-gray-300 dark:border-white'
+                ? 'bg-white text-black border-2 border-gray-300' 
+                : 'bg-black text-white border-2 border-gray-300'
             }`}>
               {playerColor}
             </span>
@@ -224,9 +224,9 @@ const RoomManager = ({ onRoomJoined, onGameStart, showRoomInfo = false, gameStar
           {playerColor === 'white' && (
             <div className="mt-6">
               <div className="flex justify-center space-x-1 mb-2">
-                <div className="w-2 h-2 bg-black dark:bg-white rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
-                <div className="w-2 h-2 bg-black dark:bg-white rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
-                <div className="w-2 h-2 bg-black dark:bg-white rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
+                <div className="w-2 h-2 bg-white rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
+                <div className="w-2 h-2 bg-white rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
+                <div className="w-2 h-2 bg-white rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
               </div>
             </div>
           )}
@@ -236,7 +236,7 @@ const RoomManager = ({ onRoomJoined, onGameStart, showRoomInfo = false, gameStar
   }
 
   return (
-    <div className="w-full max-w-lg mx-auto bg-white dark:bg-black rounded-2xl shadow-2xl border-2 border-gray-300 dark:border-white p-8 transition-all duration-300">
+    <div className="w-full max-w-lg mx-auto bg-white dark:bg-neutral-900 rounded-2xl p-8">
       <h2 className="text-3xl font-bold text-center mb-8 text-black dark:text-white">
         Join a Game
       </h2>
@@ -248,33 +248,42 @@ const RoomManager = ({ onRoomJoined, onGameStart, showRoomInfo = false, gameStar
           </label>
           <div className="flex flex-col gap-3">
             <button
-              onClick={() => setTimeControl(1)}
+              onClick={() => {
+                setTimeControl(1);
+                onTimeControlChange?.(1);
+              }}
               className={`w-full px-6 py-4 rounded-xl font-bold text-lg transition-all border-2 ${
                 timeControl === 1
-                  ? 'bg-white dark:bg-black text-black dark:text-white border-green-600 dark:border-green-500 shadow-lg'
-                  : 'bg-white dark:bg-black text-black dark:text-white border-gray-300 dark:border-gray-600 hover:border-green-400 dark:hover:border-green-600'
+                  ? 'bg-white dark:bg-neutral-900 text-black dark:text-white border-green-500 shadow-lg'
+                  : 'bg-white dark:bg-neutral-900 text-black dark:text-white border-gray-300 dark:border-gray-600 hover:border-green-600'
               }`}
             >
               <div className="text-2xl font-bold">Bullet</div>
               <div className="text-sm font-normal">1 minute</div>
             </button>
             <button
-              onClick={() => setTimeControl(3)}
+              onClick={() => {
+                setTimeControl(3);
+                onTimeControlChange?.(3);
+              }}
               className={`w-full px-6 py-4 rounded-xl font-bold text-lg transition-all border-2 ${
                 timeControl === 3
-                  ? 'bg-white dark:bg-black text-black dark:text-white border-green-600 dark:border-green-500 shadow-lg'
-                  : 'bg-white dark:bg-black text-black dark:text-white border-gray-300 dark:border-gray-600 hover:border-green-400 dark:hover:border-green-600'
+                  ? 'bg-white dark:bg-neutral-900 text-black dark:text-white border-green-500 shadow-lg'
+                  : 'bg-white dark:bg-neutral-900 text-black dark:text-white border-gray-300 dark:border-gray-600 hover:border-green-600'
               }`}
             >
               <div className="text-2xl font-bold">Blitz</div>
               <div className="text-sm font-normal">3 minutes</div>
             </button>
             <button
-              onClick={() => setTimeControl(10)}
+              onClick={() => {
+                setTimeControl(10);
+                onTimeControlChange?.(10);
+              }}
               className={`w-full px-6 py-4 rounded-xl font-bold text-lg transition-all border-2 ${
                 timeControl === 10
-                  ? 'bg-white dark:bg-black text-black dark:text-white border-green-600 dark:border-green-500 shadow-lg'
-                  : 'bg-white dark:bg-black text-black dark:text-white border-gray-300 dark:border-gray-600 hover:border-green-400 dark:hover:border-green-600'
+                  ? 'bg-white dark:bg-neutral-900 text-black dark:text-white border-green-500 shadow-lg'
+                  : 'bg-white dark:bg-neutral-900 text-black dark:text-white border-gray-300 dark:border-gray-600 hover:border-green-600'
               }`}
             >
               <div className="text-2xl font-bold">Rapid</div>
@@ -286,7 +295,7 @@ const RoomManager = ({ onRoomJoined, onGameStart, showRoomInfo = false, gameStar
         <button 
           onClick={handleCreateRoom}
           disabled={loading}
-          className="w-full px-6 py-4 bg-green-600 dark:bg-green-600 text-white dark:text-white font-bold text-lg rounded-xl border-2 border-green-600 dark:border-green-600 shadow-lg hover:shadow-xl hover:bg-green-700 dark:hover:bg-green-700 transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 flex items-center justify-center gap-2"
+          className="w-full px-6 py-4 bg-green-600 text-white font-bold text-lg rounded-xl border-2 border-green-600 shadow-lg hover:shadow-xl hover:bg-green-700 transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 flex items-center justify-center gap-2"
         >
           {loading ? (
             <>
@@ -307,9 +316,9 @@ const RoomManager = ({ onRoomJoined, onGameStart, showRoomInfo = false, gameStar
         </button>
         
         <div className="relative flex items-center my-2">
-          <div className="flex-grow border-t border-gray-300 dark:border-gray-600"></div>
-          <span className="flex-shrink mx-4 text-black dark:text-white text-sm font-medium">OR</span>
-          <div className="flex-grow border-t border-gray-300 dark:border-gray-600"></div>
+          <div className="flex-grow border-t border-gray-600"></div>
+          <span className="flex-shrink mx-4 text-white text-sm font-medium">OR</span>
+          <div className="flex-grow border-t border-gray-600"></div>
         </div>
         
         <div className="flex gap-2">
@@ -319,12 +328,12 @@ const RoomManager = ({ onRoomJoined, onGameStart, showRoomInfo = false, gameStar
             value={roomCode}
             onChange={(e) => setRoomCode(e.target.value.toUpperCase())}
             onKeyPress={(e) => e.key === 'Enter' && handleJoinRoom()}
-            className="flex-1 px-4 py-3 bg-white dark:bg-black border-2 border-gray-300 dark:border-gray-600 rounded-xl text-black dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white focus:border-transparent transition-all"
+            className="flex-1 px-4 py-3 bg-gray-800 border-2 border-gray-600 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-white focus:border-transparent transition-all"
           />
           <button 
             onClick={handleJoinRoom}
             disabled={loading}
-            className="px-6 py-3 bg-green-600 dark:bg-green-600 text-white dark:text-white font-bold rounded-xl border-2 border-green-600 dark:border-green-600 shadow-lg hover:shadow-xl hover:bg-green-700 dark:hover:bg-green-700 transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 flex items-center justify-center gap-2"
+            className="px-6 py-3 bg-green-600 text-white font-bold rounded-xl border-2 border-green-600 shadow-lg hover:shadow-xl hover:bg-green-700 transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 flex items-center justify-center gap-2"
           >
             {loading ? (
               <>
@@ -346,11 +355,11 @@ const RoomManager = ({ onRoomJoined, onGameStart, showRoomInfo = false, gameStar
         </div>
         
         {error && (
-          <div className="mt-4 p-4 bg-gray-100 dark:bg-gray-900 border-2 border-gray-300 dark:border-gray-600 rounded-xl flex items-center gap-3">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-black dark:text-white flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <div className="mt-4 p-4 bg-gray-800 border-2 border-gray-600 rounded-xl flex items-center gap-3">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-white flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
-            <span className="text-black dark:text-white font-semibold">{error}</span>
+            <span className="text-white font-semibold">{error}</span>
           </div>
         )}
       </div>

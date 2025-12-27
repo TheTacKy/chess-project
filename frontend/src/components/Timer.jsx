@@ -14,6 +14,14 @@ const Timer = ({ timeControl, gameStarted, playerColor, showOnly = false }) => {
     }
   }, [timeControl, gameStarted]);
 
+  // Calculate current time based on timeControl when game hasn't started
+  const getCurrentTime = (color) => {
+    if (!gameStarted) {
+      return timeControl * 60 * 1000;
+    }
+    return color === 'white' ? whiteTime : blackTime;
+  };
+
   // Listen for timer updates from server
   useEffect(() => {
     const handleTimerUpdate = (e) => {
@@ -56,7 +64,7 @@ const Timer = ({ timeControl, gameStarted, playerColor, showOnly = false }) => {
   // If showOnly is true, show only the timer for the specified playerColor
   if (showOnly && playerColor) {
     const isActive = gameStarted && (playerColor === 'white' ? isWhiteTurn : isBlackTurn);
-    const time = gameStarted ? (playerColor === 'white' ? whiteTime : blackTime) : (timeControl * 60 * 1000);
+    const time = getCurrentTime(playerColor);
     const isLowTime = gameStarted && (playerColor === 'white' ? isLowWhiteTime : isLowBlackTime);
 
     return (

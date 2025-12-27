@@ -7,7 +7,7 @@ import Settings from "./pages/Settings";
 import Home from "./pages/Home";
 
 function App() {
-  const [isDark, setIsDark] = useState(false);
+  const [isDark, setIsDark] = useState(true);
 
   const toggleTheme = () => {
     const newTheme = !isDark;
@@ -22,10 +22,9 @@ function App() {
   };
 
   useEffect(() => {
-    // Check system preference or saved theme
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    // Check saved theme, default to dark mode
     const savedTheme = localStorage.getItem('theme');
-    const shouldBeDark = savedTheme ? savedTheme === 'dark' : prefersDark;
+    const shouldBeDark = savedTheme ? savedTheme === 'dark' : true; // Default to dark
     
     setIsDark(shouldBeDark);
     if (shouldBeDark) {
@@ -42,13 +41,13 @@ function App() {
 
   return (
     <Router>
-      <div className="App min-h-screen bg-gray-50 dark:bg-gray-900">
+      <div className="App min-h-screen bg-white dark:bg-neutral-900">
         <div className="flex h-screen">
           {/* Left Sidebar */}
           <Sidebar isDark={isDark} toggleTheme={toggleTheme} />
           
           {/* Main Content Area */}
-          <div className="flex-1 flex flex-col overflow-auto">
+          <div className="flex-1 flex flex-col overflow-auto bg-gray-200 dark:bg-zinc-800">
             <div className="container mx-auto px-4 py-4 flex-1">
               <Routes>
                 <Route path="/" element={<Home />} />
