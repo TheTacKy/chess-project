@@ -36,10 +36,10 @@ function Sidebar({ isDark, toggleTheme }) {
       </div>
 
       {/* Navigation Menu */}
-      <nav className="flex-1 px-4 space-y-1">
+      <nav className="flex-1 px-4 space-y-1 flex flex-col items-center">
         <SidebarButton
           to="/"
-          icon="♟️"
+          icon={isDark ? "/img/whitepawn1.png" : "/img/pawn1.png"}
           isActive={isActive('/')}
         >
           <span className="font-bold">Play</span>
@@ -47,7 +47,7 @@ function Sidebar({ isDark, toggleTheme }) {
 
         <SidebarButton
           to="/puzzles"
-          icon="🧩"
+          icon="/img/puzzle1.png"
           isActive={isActive('/puzzles')}
         >
           <span className="font-bold">Puzzles</span>
@@ -55,7 +55,7 @@ function Sidebar({ isDark, toggleTheme }) {
 
         <SidebarButton
           to="/news"
-          icon="📰"
+          icon={isDark ? "/img/whitenews1.png" : "/img/news1.png"}
           isActive={isActive('/news')}
         >
           <span className="font-bold">News</span>
@@ -63,10 +63,11 @@ function Sidebar({ isDark, toggleTheme }) {
       </nav>
 
       {/* Settings and Theme Toggle */}
-      <div className={`px-4 space-y-1 ${user ? 'pb-4' : ''}`}>
+      <div className={`px-4 space-y-1 flex flex-col items-center ${user ? 'pb-4' : ''}`}>
         <SidebarButton
           to="/settings"
-          icon="⚙️"
+          icon="/img/gear-icon.png"
+          iconSize="w-7 h-7"
           isActive={isActive('/settings')}
         >
           <span className="font-bold">Settings</span>
@@ -74,7 +75,7 @@ function Sidebar({ isDark, toggleTheme }) {
         
         <button
           onClick={toggleTheme}
-          className="w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 hover:bg-gray-900 text-left text-gray-300 hover:text-white"
+          className="w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 hover:bg-gray-200 dark:hover:bg-zinc-800 text-left text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white"
         >
           <span className="text-xl">
             {isDark ? '☀️' : '🌙'}

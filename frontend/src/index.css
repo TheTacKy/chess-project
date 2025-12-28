@@ -52,6 +52,36 @@ html, body {
   border: none !important;
 }
 
+/* Custom highlight color - beige to match chess board */
+#myBoard .highlight1-32417,
+#myBoard .highlight2-9c5d2 {
+  box-shadow: inset 0 0 3px 3px #d4a574 !important;
+}
+
+/* Legal move dots - grey transparent dots like chess.com */
+#myBoard .legal-move-dot {
+  position: absolute;
+  width: 25%;
+  height: 25%;
+  border-radius: 50%;
+  background-color: rgba(0, 0, 0, 0.2);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* Circle for squares with pieces (captures) */
+#myBoard .legal-move-dot.legal-move-capture {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background-color: transparent;
+  border: 3px solid rgba(0, 0, 0, 0.2);
+  box-sizing: border-box;
+}
+
 /* Hide scrollbar but keep functionality */
 ::-webkit-scrollbar {
   display: none;

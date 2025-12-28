@@ -68,9 +68,9 @@ const Timer = ({ timeControl, gameStarted, playerColor, showOnly = false }) => {
     const isLowTime = gameStarted && (playerColor === 'white' ? isLowWhiteTime : isLowBlackTime);
 
     return (
-      <div className={`inline-flex items-center justify-center px-3 py-1.5 rounded-lg border-2 ${
+      <div className={`inline-flex items-center justify-end px-3 py-1.5 rounded-lg border-2 w-24 ${
         isActive
-          ? 'bg-white dark:bg-gray-200 border-gray-300 dark:border-gray-400'
+          ? 'bg-white dark:bg-gray-500 border-gray-300 dark:border-gray-400'
           : 'bg-gray-300 dark:bg-gray-700 border-gray-400 dark:border-gray-600'
       }`}>
         <span className={`font-mono text-sm font-bold ${
@@ -89,9 +89,9 @@ const Timer = ({ timeControl, gameStarted, playerColor, showOnly = false }) => {
 
   // If playing white, white timer at bottom; if playing black, black timer at bottom
   const whiteTimer = (
-    <div className={`inline-flex items-center justify-center px-3 py-1.5 rounded-lg border-2 ${
+    <div className={`inline-flex items-center justify-start px-3 py-1.5 rounded-lg border-2 w-24 ${
       isWhiteTurn && gameStarted
-        ? 'bg-white dark:bg-gray-200 border-gray-300 dark:border-gray-400'
+        ? 'bg-white dark:bg-gray-500 border-gray-300 dark:border-gray-400'
         : 'bg-gray-300 dark:bg-gray-700 border-gray-400 dark:border-gray-600'
     }`}>
       <span className={`font-mono text-sm font-bold ${
@@ -103,9 +103,9 @@ const Timer = ({ timeControl, gameStarted, playerColor, showOnly = false }) => {
   );
 
   const blackTimer = (
-    <div className={`inline-flex items-center justify-center px-3 py-1.5 rounded-lg border-2 ${
+    <div className={`inline-flex items-center justify-start px-3 py-1.5 rounded-lg border-2 w-24 ${
       isBlackTurn && gameStarted
-        ? 'bg-white dark:bg-gray-200 border-gray-300 dark:border-gray-400'
+        ? 'bg-white dark:bg-gray-500 border-gray-300 dark:border-gray-400'
         : 'bg-gray-300 dark:bg-gray-700 border-gray-400 dark:border-gray-600'
     }`}>
       <span className={`font-mono text-sm font-bold ${

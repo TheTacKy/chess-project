@@ -34,54 +34,58 @@ function Home() {
   return (
     <div className="bg-gray-200 dark:bg-zinc-800">
       {roomInfo.roomCode ? (
-          <div className="flex flex-col lg:flex-row gap-6 items-start lg:items-center">
-            {/* Chess Board - Takes up most of the screen */}
-            <div className="flex-1 w-full lg:w-auto">
-              <ChessBoard 
-                roomCode={roomInfo.roomCode}
-                playerColor={roomInfo.playerColor}
-                gameStarted={gameStarted}
-                timeControl={roomInfo.timeControl}
-              />
-            </div>
-            
-            {/* Room Info Sidebar */}
-            <div className="w-full lg:w-[500px] flex-shrink-0">
-              <RoomManager 
-                onRoomJoined={handleRoomJoined} 
-                onGameStart={handleGameStart}
-                showRoomInfo={true}
-                gameStarted={gameStarted}
-                roomCode={roomInfo.roomCode}
-                playerColor={roomInfo.playerColor}
-                timeControl={roomInfo.timeControl}
-              />
+          <div className="container mx-auto px-4 py-4">
+            <div className="flex flex-col lg:flex-row gap-6 items-start lg:items-center">
+              {/* Chess Board - Takes up most of the screen */}
+              <div className="flex-1 w-full lg:w-auto">
+                <ChessBoard 
+                  roomCode={roomInfo.roomCode}
+                  playerColor={roomInfo.playerColor}
+                  gameStarted={gameStarted}
+                  timeControl={roomInfo.timeControl}
+                />
+              </div>
+              
+              {/* Room Info Sidebar */}
+              <div className="w-full lg:w-[500px] flex-shrink-0">
+                <RoomManager 
+                  onRoomJoined={handleRoomJoined} 
+                  onGameStart={handleGameStart}
+                  showRoomInfo={true}
+                  gameStarted={gameStarted}
+                  roomCode={roomInfo.roomCode}
+                  playerColor={roomInfo.playerColor}
+                  timeControl={roomInfo.timeControl}
+                />
+              </div>
             </div>
           </div>
         ) : (
-          <div className="flex flex-col lg:flex-row gap-8 items-start lg:items-center">
-            {/* Chess Board - Always visible */}
-            <div className="flex-1 w-full lg:w-auto">
-              <ChessBoard 
-                roomCode={roomInfo.roomCode}
-                playerColor={roomInfo.playerColor}
-                gameStarted={gameStarted}
-                timeControl={selectedTimeControl}
-              />
-            </div>
-            
-            {/* Join Game Menu */}
-            <div className="w-full lg:w-[500px] flex-shrink-0">
-              <RoomManager 
-                onRoomJoined={handleRoomJoined} 
-                onGameStart={handleGameStart}
-                onTimeControlChange={handleTimeControlChange}
-                showRoomInfo={false}
-                gameStarted={gameStarted}
-                roomCode={roomInfo.roomCode}
-                playerColor={roomInfo.playerColor}
-                timeControl={selectedTimeControl}
-              />
+          <div className="container mx-auto px-4 py-4">
+            <div className="flex flex-col lg:flex-row gap-6 items-start lg:items-center">
+              {/* Chess Board - Always visible */}
+              <div className="flex-1 w-full lg:w-auto">
+                <ChessBoard 
+                  roomCode={roomInfo.roomCode}
+                  playerColor={roomInfo.playerColor}
+                  gameStarted={gameStarted}
+                  timeControl={selectedTimeControl}
+                />
+              </div>
+              
+              {/* Join Game Menu */}
+              <div className="w-full lg:w-[500px] flex-shrink-0">
+                <RoomManager 
+                  onRoomJoined={handleRoomJoined} 
+                  onGameStart={handleGameStart}
+                  onTimeControlChange={handleTimeControlChange}
+                  showRoomInfo={false}
+                  gameStarted={gameStarted}
+                  roomCode={roomInfo.roomCode}
+                  playerColor={roomInfo.playerColor}
+                  timeControl={selectedTimeControl}
+                />
+              </div>
             </div>
           </div>
         )}

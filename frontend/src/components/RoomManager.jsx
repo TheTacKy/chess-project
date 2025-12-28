@@ -328,12 +328,12 @@ const RoomManager = ({ onRoomJoined, onGameStart, onTimeControlChange, showRoomI
             value={roomCode}
             onChange={(e) => setRoomCode(e.target.value.toUpperCase())}
             onKeyPress={(e) => e.key === 'Enter' && handleJoinRoom()}
-            className="flex-1 px-4 py-3 bg-gray-800 border-2 border-gray-600 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-white focus:border-transparent transition-all"
+            className="flex-1 px-4 py-3 bg-zinc-800 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-white transition-all"
           />
           <button 
             onClick={handleJoinRoom}
             disabled={loading}
-            className="px-6 py-3 bg-green-600 text-white font-bold rounded-xl border-2 border-green-600 shadow-lg hover:shadow-xl hover:bg-green-700 transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 flex items-center justify-center gap-2"
+            className="px-6 py-3 bg-zinc-800 text-white font-bold rounded-xl border-2 border-zinc-800 shadow-lg hover:shadow-xl hover:bg-zinc-700 transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 flex items-center justify-center gap-2"
           >
             {loading ? (
               <>
