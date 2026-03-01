@@ -44,7 +44,8 @@ export const signup = async (req, res) => {
       user: {
         id: user._id,
         username: user.username,
-        email: user.email
+        email: user.email,
+        profilePicture: user.profilePicture
       },
       token
     });
@@ -85,7 +86,8 @@ export const login = async (req, res) => {
       user: {
         id: user._id,
         username: user.username,
-        email: user.email
+        email: user.email,
+        profilePicture: user.profilePicture
       },
       token
     });
@@ -105,7 +107,6 @@ export const logout = (req, res) => {
 // Note: This should be used with protectRoute middleware which sets req.user
 export const getCurrentUser = async (req, res) => {
   try {
-    // User is already attached to req by protectRoute middleware
     res.json({ user: req.user });
   } catch (error) {
     console.error('Get current user error:', error);

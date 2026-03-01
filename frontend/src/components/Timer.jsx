@@ -74,7 +74,7 @@ const Timer = ({ timeControl, gameStarted, playerColor, showOnly = false }) => {
           : 'bg-gray-300 dark:bg-gray-700 border-gray-400 dark:border-gray-600'
       }`}>
         <span className={`font-mono text-sm font-bold ${
-          isLowTime ? 'text-red-600 dark:text-red-400 animate-pulse' : 'text-gray-800 dark:text-white'
+          isLowTime ? 'text-red-600 dark:text-red-400 animate-pulse' : 'text-black dark:text-white'
         }`}>
           {formatTime(time)}
         </span>
@@ -95,7 +95,7 @@ const Timer = ({ timeControl, gameStarted, playerColor, showOnly = false }) => {
         : 'bg-gray-300 dark:bg-gray-700 border-gray-400 dark:border-gray-600'
     }`}>
       <span className={`font-mono text-sm font-bold ${
-        isLowWhiteTime ? 'text-red-600 dark:text-red-400 animate-pulse' : 'text-gray-800 dark:text-white'
+        isLowWhiteTime ? 'text-red-600 dark:text-red-400 animate-pulse' : 'text-black dark:text-white'
       }`}>
         {formatTime(whiteTime)}
       </span>
@@ -109,7 +109,7 @@ const Timer = ({ timeControl, gameStarted, playerColor, showOnly = false }) => {
         : 'bg-gray-300 dark:bg-gray-700 border-gray-400 dark:border-gray-600'
     }`}>
       <span className={`font-mono text-sm font-bold ${
-        isLowBlackTime ? 'text-red-600 dark:text-red-400 animate-pulse' : 'text-gray-800 dark:text-white'
+        isLowBlackTime ? 'text-red-600 dark:text-red-400 animate-pulse' : 'text-black dark:text-white'
       }`}>
         {formatTime(blackTime)}
       </span>

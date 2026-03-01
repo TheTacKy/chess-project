@@ -55,7 +55,7 @@ function Navigation() {
           </span>
           <button
             onClick={handleLogout}
-            className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors"
+            className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors"
           >
             Logout
           </button>
@@ -64,7 +64,7 @@ function Navigation() {
         <>
           <Link
             to="/login"
-            className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors"
+            className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors"
           >
             Login
           </Link>

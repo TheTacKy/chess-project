@@ -8,6 +8,8 @@ const ChessBoard = ({ roomCode, playerColor, gameStarted, timeControl = 3, oppon
   const boardInstanceRef = useRef(null);
   const gameHasStartedRef = useRef(false);
   const gameOverRef = useRef(false);
+  const pieceThemeRef = useRef('alpha');
+  const handlersRef = useRef({ onDragStart: null, onDrop: null, onSnapEnd: null, showLegalMoves: null, removeLegalMoves: null });
 
   useEffect(() => {
     // Wait for the chess libraries to be loaded with a timeout
@@ -23,6 +25,10 @@ const ChessBoard = ({ roomCode, playerColor, gameStarted, timeControl = 3, oppon
 
     const initializeBoard = () => {
       try {
+        // Get piece theme from localStorage
+        const savedTheme = localStorage.getItem('pieceTheme') || 'alpha';
+        pieceThemeRef.current = savedTheme;
+        
         // Initialize the chess game
         gameRef.current = new window.Chess();
         
@@ -172,6 +178,10 @@ const ChessBoard = ({ roomCode, playerColor, gameStarted, timeControl = 3, oppon
           dots.forEach(dot => dot.remove());
         };
 
+        // Store handlers in ref for reuse
+        handlersRef.current.showLegalMoves = showLegalMoves;
+        handlersRef.current.removeLegalMoves = removeLegalMoves;
+
         const onDragStart = (source, piece) => {
           // Don't allow moves if no room/color assigned
           if (!roomCode || !playerColor) return false;
@@ -237,19 +247,28 @@ const ChessBoard = ({ roomCode, playerColor, gameStarted, timeControl = 3, oppon
           boardInstanceRef.current.position(gameRef.current.fen());
         };
 
+        // Store handlers in ref
+        handlersRef.current.onDragStart = onDragStart;
+        handlersRef.current.onDrop = onDrop;
+        handlersRef.current.onSnapEnd = onSnapEnd;
+
         const updateStatus = () => {
           // Status updates are no longer displayed, but we keep this function
           // in case we need to track game state internally
         };
 
         // Initialize the board
+        const getPieceTheme = () => {
+          return `/img/customchesspieces/${pieceThemeRef.current}/{piece}.svg`;
+        };
+
         const config = {
           draggable: true,
           position: 'start',
           onDragStart: onDragStart,
           onDrop: onDrop,
           onSnapEnd: onSnapEnd,
-          pieceTheme: '/img/customchesspieces/alpha/{piece}.svg'
+          pieceTheme: getPieceTheme()
         };
 
         boardInstanceRef.current = window.Chessboard('myBoard', config);
@@ -303,6 +322,38 @@ const ChessBoard = ({ roomCode, playerColor, gameStarted, timeControl = 3, oppon
       }
     };
 
+    // Listen for piece theme changes
+    const handleThemeChange = (e) => {
+      const newTheme = e.detail.theme;
+      pieceThemeRef.current = newTheme;
+      if (boardInstanceRef.current && handlersRef.current.onDragStart) {
+        // Update the piece theme
+        const newPieceTheme = `/img/customchesspieces/${newTheme}/{piece}.svg`;
+        // Reinitialize board with new theme
+        const currentPosition = boardInstanceRef.current.position();
+        const isFlipped = boardInstanceRef.current.orientation() === 'black';
+        boardInstanceRef.current.destroy();
+        
+        const config = {
+          draggable: true,
+          position: currentPosition,
+          onDragStart: handlersRef.current.onDragStart,
+          onDrop: handlersRef.current.onDrop,
+          onSnapEnd: handlersRef.current.onSnapEnd,
+          pieceTheme: newPieceTheme
+        };
+        
+        boardInstanceRef.current = window.Chessboard('myBoard', config);
+        
+        // Re-flip if needed
+        if (isFlipped) {
+          boardInstanceRef.current.flip();
+        }
+      }
+    };
+
+    window.addEventListener('pieceThemeChanged', handleThemeChange);
+
     // Start checking for libraries
     checkLibraries();
 
@@ -314,6 +365,7 @@ const ChessBoard = ({ roomCode, playerColor, gameStarted, timeControl = 3, oppon
       socket.off('timerUpdate');
       socket.off('turnChange');
       socket.off('timeExpired');
+      window.removeEventListener('pieceThemeChanged', handleThemeChange);
       if (boardInstanceRef.current) {
         boardInstanceRef.current.destroy();
       }

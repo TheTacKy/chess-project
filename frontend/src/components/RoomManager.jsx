@@ -146,7 +146,7 @@ const RoomManager = ({ onRoomJoined, onGameStart, onTimeControlChange, showRoomI
                         key={index}
                         className={`px-3 py-2 rounded text-sm font-mono ${
                           isWhite
-                            ? 'bg-gray-200 dark:bg-gray-800 text-black dark:text-white'
+                            ? 'bg-gray-200 dark:bg-neutral-900 text-black dark:text-white'
                             : 'bg-white dark:bg-neutral-900 text-black dark:text-white'
                         }`}
                       >
@@ -355,7 +355,7 @@ const RoomManager = ({ onRoomJoined, onGameStart, onTimeControlChange, showRoomI
         </div>
         
         {error && (
-          <div className="mt-4 p-4 bg-gray-800 border-2 border-gray-600 rounded-xl flex items-center gap-3">
+          <div className="mt-4 p-4 bg-neutral-900 border-2 border-gray-600 rounded-xl flex items-center gap-3">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-white flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
